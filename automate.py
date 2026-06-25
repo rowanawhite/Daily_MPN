@@ -70,7 +70,7 @@ def click_button():
 
             # Step 3: Password — wait for password step to become active/visible
             page.wait_for_selector("input[name='password']", state="visible", timeout=15000)
-            page.type("input[name='password']", EBUILDER_PASSWORD, delay=50)
+            page.fill("input[name='password']", EBUILDER_PASSWORD, delay=50)
             page.wait_for_timeout(1000)
             page.click("button[name='password-submit']")
             page.wait_for_timeout(5000)
