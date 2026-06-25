@@ -1,0 +1,9 @@
+﻿mpn_env/
+build/
+dist/
+*.spec
+__pycache__/
+*.png
+*.xls
+*.xlsx
+*.xlsm

@@ -1,0 +1,82 @@
+name: Daily Automation
+on:
+  schedule:
+    - cron: '30 21 * * *'  
+  workflow_dispatch:
+jobs:
+  automate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: pip install playwright pandas openpyxl lxml requests && playwright install chromium
+      - name: Run automation
+        env:
+          EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          EBUILDER_USERNAME: ${{ secrets.EBUILDER_USERNAME }}
+          EBUILDER_PASSWORD: ${{ secrets.EBUILDER_PASSWORD }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_REFRESH_TOKEN: ${{ secrets.AZURE_REFRESH_TOKEN }}
+          OTP_EMAIL: ${{ secrets.OTP_EMAIL }}
+        run: python automate.py
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: screenshot_*.png
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: report
+          path: report_*.xlsx
+      - name: Upload raw html
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: raw_html
+          path: report_raw.html
+
+# name: Daily MPN
+
+# on:
+#   workflow_dispatch:
+
+# jobs:
+#   run-script:
+#     runs-on: windows-latest
+
+#     steps:
+#       - name: Checkout repo
+#         uses: actions/checkout@v4
+
+#       - name: Set up Python
+#         uses: actions/setup-python@v5
+#         with:
+#           python-version: '3.11'
+
+#       - name: Install packages
+#         run: |
+#           pip install openpyxl pandas
+
+#       - name: Run script
+#         env:
+#           EMAIL_ADDRESS: ${{ secrets.EMAIL_ADDRESS }}
+#           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+#         run: |
+#           python extract_mpn.py MacroTest.xlsm
+
+#       - name: Commit updated Excel files
+#         run: |
+#           git config user.name "github-actions"
+#           git config user.email "github-actions@github.com"
+#           git add TestDest2.xlsx TestTracker2.xlsx
+#           git commit -m "Update tracker files" || echo "No changes"
+#           git push
