@@ -16,7 +16,7 @@ import requests
 OTP_EMAIL = os.environ["OTP_EMAIL"]        # new secret: the Outlook address that receives the code
 
 EMAIL_ADDRESS = os.environ["EMAIL_ADDRESS"]
-EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"]
+EMAIL_PASSWORD = os.environ["EMAIL_PASSWORD"] #yqgk-nmye-vlpo-tcjt
 EBUILDER_USERNAME = os.environ["EBUILDER_USERNAME"]
 EBUILDER_PASSWORD = os.environ["EBUILDER_PASSWORD"]
 
@@ -52,17 +52,16 @@ def click_button():
             page.wait_for_load_state("networkidle", timeout=30000)
             page.wait_for_timeout(2000)
             page.screenshot(path="screenshot_2_after_username.png")
-
-            # Step 2: Email entry field (e-Builder prompts for email before sending OTP)
+            
+            # Step 2: Email entry field
             page.wait_for_selector("input#username-field", state="visible", timeout=15000)
-            page.click("input#username-field")
-            page.type("input#username-field", OTP_EMAIL, delay=200)
+            page.fill("input#username-field", OTP_EMAIL)  # sets value all at once, no character delay
             page.evaluate("""
                 const input = document.querySelector("input#username-field");
                 input.dispatchEvent(new Event('input', { bubbles: true }));
                 input.dispatchEvent(new Event('change', { bubbles: true }));
             """)
-            page.wait_for_timeout(2000)
+            page.wait_for_timeout(1000)  # brief pause for the button to react to the events
             page.wait_for_selector("button#enter_username_submit:not([disabled])", state="visible", timeout=15000)
             page.click("button#enter_username_submit")
             page.wait_for_timeout(2000)
