@@ -69,9 +69,21 @@ def click_button():
             print("Email submitted")
 
             # Step 3: Password — wait for password step to become active/visible
+            # page.wait_for_selector("input[name='password']", state="visible", timeout=15000)
+            # page.type("input[name='password']", EBUILDER_PASSWORD, delay=50)
+            # page.wait_for_timeout(1000)
+            # page.click("button[name='password-submit']")
+            # page.wait_for_timeout(5000)
+            # page.screenshot(path="screenshot_4_after_password.png")
+            # print("Password submitted, waiting for OTP...")
             page.wait_for_selector("input[name='password']", state="visible", timeout=15000)
-            page.fill("input[name='password']", EBUILDER_PASSWORD)
-            page.wait_for_timeout(1000)
+            page.click("input[name='password']")
+            page.wait_for_timeout(500)
+            page.type("input[name='password']", EBUILDER_PASSWORD, delay=50)  # 50ms is fast but reliable
+            page.wait_for_function(
+                f"document.querySelector(\"input[name='password']\").value.length === {len(EBUILDER_PASSWORD)}"
+            )
+            page.wait_for_timeout(500)
             page.click("button[name='password-submit']")
             page.wait_for_timeout(5000)
             page.screenshot(path="screenshot_4_after_password.png")
