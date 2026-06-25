@@ -83,7 +83,7 @@ def click_button():
             page.wait_for_function(
                 f"document.querySelector(\"input[name='password']\").value.length === {len(EBUILDER_PASSWORD)}"
             )
-            page.wait_for_timeout(500)
+            page.wait_for_timeout(1000)
             page.click("button[name='password-submit']")
             page.wait_for_timeout(5000)
             page.screenshot(path="screenshot_4_after_password.png")
